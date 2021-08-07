@@ -247,6 +247,15 @@
 	<profiles>
 		<profile>
 			<id>production</id>
+			<properties>
+				<vaadin.productionMode>true</vaadin.productionMode>
+			</properties>
+			<dependencies>
+				<dependency>
+					<groupId>com.vaadin</groupId>
+					<artifactId>flow-server-production-mode</artifactId>
+				</dependency>
+			</dependencies>
 			<build>
 				<plugins>
 					<plugin>
@@ -255,6 +264,12 @@
 						<version>${vaadin.version}</version>
 						<executions>
 							<execution>
+								<goals>
+									<goal>prepare-frontend</goal>
+									<goal>build-frontend</goal>
+								</goals>
+							</execution>
+							<!--<execution>
 								<id>frontend</id>
 								<phase>compile</phase>
 								<goals>
@@ -264,8 +279,20 @@
 								<configuration>
 									<productionMode>true</productionMode>
 								</configuration>
-							</execution>
+							</execution> -->
 						</executions>
+					</plugin>
+					<plugin>
+						<!-- https://mvnrepository.com/artifact/com.heroku.sdk/heroku-maven-plugin -->
+						<groupId>com.heroku.sdk</groupId>
+						<artifactId>heroku-maven-plugin</artifactId>
+						<version>3.0.4</version>
+						<configuration>
+							<appName>${heroku.appName}</appName>
+							<processTypes>
+								<web>java $JAVA_OPTS -cp target/classes:target/dependency/* com.example.Main</web>
+							</processTypes>
+						</configuration>
 					</plugin>
 				</plugins>
 			</build>
